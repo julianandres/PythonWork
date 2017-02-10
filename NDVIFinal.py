@@ -1,0 +1,78 @@
+import time
+import numpy as np
+from matplotlib import pyplot as plt
+import cv2
+
+
+base='probes/'
+nombre='yaguara3'
+extension='.jpg'
+original = cv2.imread(base+nombre+extension)           # read next frame
+b, g, r = cv2.split(original)
+#cv2.imshow('Original',imgOriginal)
+cv2.imwrite('original.jpg',original)
+color = ('b','g','r')
+#for channel,col in enumerate(color):
+#	histr = cv2.calcHist([original],[channel],None,[256],[0,256])	
+#	plt.plot(histr,color = col)
+#	plt.xlim([0,256])
+#plt.title('Histograma')
+#imagenNDVI=funciones.NDVICalc(imgOriginal)
+
+
+"This function performs the NDVI calculation and returns an RGB frame)"
+lowerLimit = 5 #this is to avoid divide by zero and other weird stuff when color is near black
+
+#First, make containers
+oldHeight,oldWidth = original[:,:,0].shape; 
+ndviImage = np.zeros((oldHeight,oldWidth,3),np.uint8) #make a blank RGB image
+ndvi = np.zeros((oldHeight,oldWidth),np.int) #make a blank b/w image for storing NDVI value
+red = np.zeros((oldHeight,oldWidth),np.int) #make a blank array for red
+blue = np.zeros((oldHeight,oldWidth),np.int) #make a blank array for blue
+
+#Now get the specific channels. Remember: (B , G , R)
+red = (original[:,:,2]).astype('float')
+blue = (original[:,:,0]).astype('float')
+print red
+print "red channel"
+#Perform NDVI calculation
+summ = red+blue
+diff=blue-red
+summ[summ<lowerLimit] = lowerLimit #do some saturation to prevent low intensity noise
+
+bottom = (red.astype(np.float32) + blue)
+bottom[bottom == 0] = 0.01  # Make sure we don't dMiivide by zero!
+
+ndvi = (blue - red) / bottom
+division=ndvi
+print division
+
+division=division+1
+division=division*127
+
+
+
+ndvi = division.astype('uint8')
+print ndvi
+print "ndviLab"
+redSat = (ndvi-128)*2  #red channel
+bluSat = ((255-ndvi)-128)*2 #blue channel
+redSat[ndvi<128] = 0; #if the NDVI is negative, no red info
+bluSat[ndvi>=128] = 0; #if the NDVI is positive, no blue info
+
+
+#And finally output the image. Remember: (B , G , R)
+#Red Channel
+ndviImage[:,:,2] = redSat
+
+#Blue Channel
+ndviImage[:,:,0] = bluSat
+
+#Green Channel
+ndviImage[:,:,1] = 255-(bluSat+redSat)
+
+cv2.imwrite('ndviPublicLab.jpg',ndviImage)
+#plt.show()
+c = cv2.waitKey(7) % 0x100
+cv2.waitKey(0)
+cv2.destroyAllWindows()

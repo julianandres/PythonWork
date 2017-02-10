@@ -1,0 +1,223 @@
+import numpy as np
+import cv2
+import os
+import datetime
+from matplotlib import pyplot as plt
+
+
+# Transforms the NDVI into the Blue to Green grading
+
+
+def NDVICalc(original):
+    "This function performs the NDVI calculation and returns an RGB frame)"
+    lowerLimit = 5 #this is to avoid divide by zero and other weird stuff when color is near black
+
+    #First, make containers
+    oldHeight,oldWidth = original[:,:,0].shape; 
+    ndviImage = np.zeros((oldHeight,oldWidth,3),np.uint8) #make a blank RGB image
+    ndvi = np.zeros((oldHeight,oldWidth),np.int) #make a blank b/w image for storing NDVI value
+    Vis = np.zeros((oldHeight,oldWidth),np.int) #make a blank array for red
+    IR = np.zeros((oldHeight,oldWidth),np.int) #make a blank array for blue
+
+    #Now get the specific channels. Remember: (B , G , R)
+    Vis = (original[:,:,2]).astype('float')
+    IR = (original[:,:,0]).astype('float')
+    print Vis
+    print "red channel"
+    #Perform NDVI calculation
+    summ = Vis+IR
+    diff=IR-Vis
+    summ[summ<lowerLimit] = lowerLimit #do some saturation to prevent low intensity noise
+    
+    bottom = (Vis.astype(np.float32) + IR)
+    bottom[bottom == 0] = 0.01  # Make sure we don't dMiivide by zero!
+
+    ndvi = (IR - Vis) / bottom
+    division=ndvi
+    print division
+    
+    division=division+1
+    division=division*127
+    ndvi = division.astype('uint8')
+    print ndvi
+    print "ndviLab"
+    redSat = (ndvi-128)*2  #red channel
+    bluSat = ((255-ndvi)-128)*2 #blue channel
+    redSat[ndvi<128] = 0; #if the NDVI is negative, no red info
+    bluSat[ndvi>=128] = 0; #if the NDVI is positive, no blue info
+
+
+    #And finally output the image. Remember: (B , G , R)
+    #Red Channel
+    ndviImage[:,:,2] = redSat
+
+    #Blue Channel
+    ndviImage[:,:,0] = bluSat
+
+    #Green Channel
+    ndviImage[:,:,1] = 255-(bluSat+redSat)
+
+    return ndviImage;
+
+def colorGradeBG(ndvi):
+
+	# red channel
+    red = np.zeros(ndvi.shape,np.float32)
+
+    # blue channel
+    blue = cv2.divide(ndvi, 2)
+    blue = cv2.subtract(0.5, blue)
+
+    # green channel
+    green = cv2.add(ndvi, 1.0)
+    green = cv2.divide(green, 2.0)
+
+    gradedNDVI = cv2.merge((blue,green,red))
+    return gradedNDVI
+
+def colorGradeBGR(ndvi):
+    
+    maskGreater = cv2.compare(ndvi, 0.0, cv2.CMP_GE)
+    #cv2.imshow('mkGreater',maskGreater)
+    maskLess = cv2.compare(ndvi, 0.0, cv2.CMP_LT)
+    #cv2.imshow('mkLess',maskLess)
+
+    ## greater than 0 part
+    # red
+    red = np.zeros(ndvi.shape,np.float32)#
+    
+    # blue is 0
+    blue = cv2.add(red,0.0, mask = maskGreater) #, dtype=np.float32)
+    
+    # red
+    #red = cv2.add(ndvi,0.0, mask = maskGreater)
+    red = cv2.multiply(ndvi,1.7)
+    print "redGrade"
+    print red
+    # green
+    green = cv2.subtract(2.0, red, mask = maskGreater)
+
+    ## less than 0 part
+
+    # red is 0
+
+  	# blue
+    blue = cv2.add(blue, 1.0, mask = maskLess)
+    
+    # green
+    lowgreen = cv2.add(ndvi,1.5, mask = maskLess)
+    green = cv2.add(green, lowgreen)
+   
+    # clamp to [0,1]
+    red = cv2.min(red,1)
+    red = cv2.max(red,0)  
+  
+    green = cv2.min(green,1)
+    green = cv2.max(green,0)   
+    blue = cv2.min(blue,1)
+    blue = cv2.max(blue,0) 
+    gradedNDVI = cv2.merge((blue,green,red))
+    return gradedNDVI
+
+
+# calculates the NDVI from 2 red images
+# Frames have to be aligned
+def calculateNDVI(VISframe, IRframe, grading,original):
+    
+    
+    # convert to floating point precision and scale down to [0;1]
+    fVIS = VISframe.astype(np.float32)
+    #fBLUE = cv2.divide(fBLUE, 255.0)
+    #print fBLUE
+    fIR = IRframe.astype(np.float32)
+    #fIR = cv2.divide(fIR, 255.0)
+    # calc the ndvi equation
+    numerator = fIR-fVIS
+    #numerator = fIR-fBLUE
+    #print numerator
+    denumerator = cv2.add(fIR, fVIS)+0.5
+    fraction = cv2.divide(numerator, denumerator)
+    print "ndviProbeuno"
+    print fraction
+    print "ndviProbeuno"
+    NDVIframe = fraction*1.5
+    #NDVIframe = ndvi
+    cv2.imshow('NDVImetodo2',NDVIframe)
+    cv2.imwrite('NDVImetodo2.jpg',NDVIframe)
+
+
+    # apply additional grading
+    if grading == "BG":
+    	print "BG"
+        NDVIframeG = colorGradeBG(NDVIframe)
+    elif grading == "BGR":
+    	print "BGR"
+        NDVIframeG = colorGradeBGR(NDVIframe)
+    else:
+    	print "NO"
+        NDVIframeG = NDVIframe
+
+    return NDVIframe, NDVIframeG
+
+def loadImageAndNDVI(img,nombre):
+	print "IMGAnDNDVI"
+	
+
+	IR,g,RED = cv2.split(img)
+	#print img.shape
+        IR = IR
+	cv2.imwrite('Bandas/'+nombre+'REDPrev.jpg',RED)
+	RED = RED-IR
+	print "redprevio"
+	print RED
+	#cv2.imshow("IR",RED)
+	oldHeight,oldWidth =img[:,:,0].shape; 
+	ndviImage = np.zeros((oldHeight,oldWidth,3),np.uint8) #make a blank RGB image
+	ndviImage[:,:,2] = RED
+
+	#Blue Channel
+	ndviImage[:,:,0] = IR
+
+	#Green Channel
+	ndviImage[:,:,1] = g
+
+	cv2.imwrite('imgResultante2.jpg',ndviImage)
+	img = cv2.merge((IR.astype('int'),g.astype('int'),RED.astype('int')))
+	cv2.imwrite('imgResultante.jpg',img)
+
+	cv2.imwrite('Bandas/'+nombre+'IR.jpg',IR)
+	#cv2.imshow("Blue",b)	
+	cv2.imwrite('Bandas/'+nombre+'RED.jpg',RED)
+	#cv2.imshow("Green",g)
+	cv2.imwrite("Bandas/"+nombre+"Green.jpg",g)
+	# calculate the ndvi and get the color graded version
+	ndvi1, ndvi2 = calculateNDVI(RED,IR,"BGR",img)
+
+	# scale the NDVI from [-1;1] to [0;1] for propper display
+	ndvi1 = cv2.add(ndvi1, 1.0)
+	ndvi1 = cv2.divide(ndvi1, 2.0)
+	
+	# show the results
+	cv2.imshow("NDVI",ndvi1)
+	cv2.imshow("NDVI2",ndvi2)
+
+	#transpose to [0;255] to save as 8bit
+	ndvi1 = cv2.multiply(ndvi1, 255)
+
+	ndvi2 = cv2.multiply(ndvi2, np.array([255.0,255.0,255.0,0.0]))
+	#print "ndvi2"
+	#print ndvi1
+	
+	# convert back to 8bit
+	intNDVI = ndvi1.astype(np.uint8)
+	intNDVI2 = ndvi2.astype(np.uint8)
+	img_map =  cv2.applyColorMap (intNDVI, cv2.COLORMAP_HSV)
+	#cv2.imshow("COLORMAP",img_map)
+	# write to disc
+        print "writing Images"
+	cv2.imwrite(nombre+"NDVIcolormapmetodo2.jpg",img_map)
+	cv2.imwrite(nombre+"NDVImetodo2.jpg",intNDVI)
+	cv2.imwrite(nombre+"NDVI3metodo2.jpg",intNDVI2)
+	print "finalizadoNDVI"
+
+
