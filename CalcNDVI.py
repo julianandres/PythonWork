@@ -145,8 +145,8 @@ def count(imagen,vueltas,prom):
 	#cv2.imshow('maskInferior',mascaraInferior)
 	return mascaraSuperior,mascaraInferior,promedio
 
-base='probes/'
-nombre='yaguara3'
+base='probes/probeBands/'
+nombre='dobleCamNoirSol'
 extension='.jpg'
 imgOriginal = cv2.imread(base+nombre+extension)            # read next frame
 b, g, r = cv2.split(imgOriginal)
@@ -161,7 +161,7 @@ for channel,col in enumerate(color):
 #plt.title('Histograma')
 imagenNDVI=funciones.NDVICalc(imgOriginal)
 funciones.loadImageAndNDVI(imgOriginal,nombre)
-cv2.imwrite('ndviPublicLab.jpg',imagenNDVI)
+cv2.imwrite("ResultadosNDVI/"+nombre+"ndviPublicLab.jpg",imagenNDVI)
 #plt.show()
 c = cv2.waitKey(7) % 0x100
 cv2.waitKey(0)

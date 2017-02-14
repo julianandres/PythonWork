@@ -18,10 +18,12 @@ def NDVICalc(original):
     ndvi = np.zeros((oldHeight,oldWidth),np.int) #make a blank b/w image for storing NDVI value
     Vis = np.zeros((oldHeight,oldWidth),np.int) #make a blank array for red
     IR = np.zeros((oldHeight,oldWidth),np.int) #make a blank array for blue
-
+    green = np.zeros((oldHeight,oldWidth),np.int) #make a blank array for blue
     #Now get the specific channels. Remember: (B , G , R)
     Vis = (original[:,:,2]).astype('float')
     IR = (original[:,:,0]).astype('float')
+    green = (original[:,:,1]).astype('float')
+    Vis=Vis-green
     print Vis
     print "red channel"
     #Perform NDVI calculation
@@ -78,12 +80,13 @@ def colorGradeBG(ndvi):
 def colorGradeBGR(ndvi):
     
     maskGreater = cv2.compare(ndvi, 0.0, cv2.CMP_GE)
-    #cv2.imshow('mkGreater',maskGreater)
+    cv2.imwrite('mkGreater.jpg',maskGreater)
     maskLess = cv2.compare(ndvi, 0.0, cv2.CMP_LT)
-    #cv2.imshow('mkLess',maskLess)
+    cv2.imwrite('mkLess.jpg',maskLess)
 
     ## greater than 0 part
     # red
+    
     red = np.zeros(ndvi.shape,np.float32)#
     
     # blue is 0
@@ -102,8 +105,8 @@ def colorGradeBGR(ndvi):
     # red is 0
 
   	# blue
-    blue = cv2.add(blue, 1.0, mask = maskLess)
-    
+    blue = cv2.add(blue, 2.0, mask = maskLess)
+   
     # green
     lowgreen = cv2.add(ndvi,1.5, mask = maskLess)
     green = cv2.add(green, lowgreen)
@@ -135,12 +138,12 @@ def calculateNDVI(VISframe, IRframe, grading,original):
     numerator = fIR-fVIS
     #numerator = fIR-fBLUE
     #print numerator
-    denumerator = cv2.add(fIR, fVIS)+0.5
+    denumerator = cv2.add(fIR, fVIS)
     fraction = cv2.divide(numerator, denumerator)
     print "ndviProbeuno"
     print fraction
     print "ndviProbeuno"
-    NDVIframe = fraction*1.5
+    NDVIframe = fraction
     #NDVIframe = ndvi
     cv2.imshow('NDVImetodo2',NDVIframe)
     cv2.imwrite('NDVImetodo2.jpg',NDVIframe)
@@ -165,31 +168,23 @@ def loadImageAndNDVI(img,nombre):
 
 	IR,g,RED = cv2.split(img)
 	#print img.shape
-        IR = IR
+        #IR = cv2.equalizeHist(IR)
 	cv2.imwrite('Bandas/'+nombre+'REDPrev.jpg',RED)
-	RED = RED-IR
+	RED = RED
+	#RED = cv2.equalizeHist(RED)
+	IR=IR
 	print "redprevio"
 	print RED
 	#cv2.imshow("IR",RED)
-	oldHeight,oldWidth =img[:,:,0].shape; 
-	ndviImage = np.zeros((oldHeight,oldWidth,3),np.uint8) #make a blank RGB image
-	ndviImage[:,:,2] = RED
-
-	#Blue Channel
-	ndviImage[:,:,0] = IR
-
-	#Green Channel
-	ndviImage[:,:,1] = g
-
-	cv2.imwrite('imgResultante2.jpg',ndviImage)
+	
 	img = cv2.merge((IR.astype('int'),g.astype('int'),RED.astype('int')))
-	cv2.imwrite('imgResultante.jpg',img)
+	cv2.imwrite('ResultantesNGB/'+nombre+'imgResultante.jpg',img)
 
 	cv2.imwrite('Bandas/'+nombre+'IR.jpg',IR)
 	#cv2.imshow("Blue",b)	
 	cv2.imwrite('Bandas/'+nombre+'RED.jpg',RED)
 	#cv2.imshow("Green",g)
-	cv2.imwrite("Bandas/Green.jpg",g)
+	cv2.imwrite("Bandas/"+nombre+"Green.jpg",g)
 	# calculate the ndvi and get the color graded version
 	ndvi1, ndvi2 = calculateNDVI(RED,IR,"BGR",img)
 
@@ -215,9 +210,9 @@ def loadImageAndNDVI(img,nombre):
 	#cv2.imshow("COLORMAP",img_map)
 	# write to disc
         print "writing Images"
-	cv2.imwrite(nombre+"NDVIcolormapmetodo2.jpg",img_map)
-	cv2.imwrite(nombre+"NDVImetodo2.jpg",intNDVI)
-	cv2.imwrite(nombre+"NDVI3metodo2.jpg",intNDVI2)
+	cv2.imwrite("ResultadosNDVI/"+nombre+"NDVIcolormapHSV.jpg",img_map)
+	cv2.imwrite("ResultadosNDVI/"+nombre+"NDVIGray.jpg",intNDVI)
+	cv2.imwrite("ResultadosNDVI/"+nombre+"NDVIColorMap.jpg",intNDVI2)
 	print "finalizadoNDVI"
 
 
