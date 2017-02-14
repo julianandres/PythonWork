@@ -24,6 +24,7 @@ print "hola2"
 fig, ax = plt.subplots()
 
 im = ax.imshow(data, interpolation='nearest', cmap=cmap,vmin=0,vmax=vmax)
+cv2.imshow("hola",im)
 print "hola"
 #im = ax.pcolor(data, cmap=cmap, vmin=0, vmax=vmax, edgecolors='black')
 cbar = fig.colorbar(im)

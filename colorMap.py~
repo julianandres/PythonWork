@@ -3,6 +3,8 @@ import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
 import cv2
 
+
+
 base='probes/probeBands/'
 nombre='dobleCamNoirSol'
 extension='.jpg'
