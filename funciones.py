@@ -2,6 +2,7 @@ import numpy as np
 import cv2
 import os
 import datetime
+import colorMap
 from matplotlib import pyplot as plt
 
 
@@ -147,7 +148,7 @@ def calculateNDVI(VISframe, IRframe, grading,original):
     #NDVIframe = ndvi
     cv2.imshow('NDVImetodo2',NDVIframe)
     cv2.imwrite('NDVImetodo2.jpg',NDVIframe)
-
+    colorMap.colorGradeBGRMatPlot(fraction)
 
     # apply additional grading
     if grading == "BG":
@@ -214,5 +215,6 @@ def loadImageAndNDVI(img,nombre):
 	cv2.imwrite("ResultadosNDVI/"+nombre+"NDVIGray.jpg",intNDVI)
 	cv2.imwrite("ResultadosNDVI/"+nombre+"NDVIColorMap.jpg",intNDVI2)
 	print "finalizadoNDVI"
+        
 
 

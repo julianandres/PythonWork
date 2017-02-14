@@ -2,6 +2,7 @@ import numpy as np
 import cv2
 import os
 import datetime
+import colorMap
 from matplotlib import pyplot as plt
 
 
@@ -105,7 +106,7 @@ def colorGradeBGR(ndvi):
     # red is 0
 
   	# blue
-    blue = cv2.add(blue, 2.0, mask = maskLess)
+    blue = cv2.add(blue, 4.0, mask = maskLess)
    
     # green
     lowgreen = cv2.add(ndvi,1.5, mask = maskLess)
