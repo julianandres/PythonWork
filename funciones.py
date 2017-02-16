@@ -139,7 +139,7 @@ def calculateNDVI(VISframe, IRframe, grading,original,nombre):
     numerator = fIR-fVIS
     #numerator = fIR-fBLUE
     #print numerator
-    denumerator = cv2.add(fIR, fVIS)
+    denumerator = fIR+fVis
     fraction = cv2.divide(numerator, denumerator)
     print "ndviProbeuno"
     #print fraction
