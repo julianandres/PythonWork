@@ -5,10 +5,10 @@ import cv2
 import funciones
 
 base='probes/probeBands/'
-nombre2='dobleCamNoirSol'
+nombre2='dobleCamNoirTercero'
 extension='.jpg'
 base2='probes/probeBands/'
-nombre='dobleCamRGBSol'
+nombre='dobleCamRGBTercero'
 extension2='.jpg'
 print base+nombre+extension
 img = cv2.imread(base+nombre+extension) #banda roja normal
@@ -25,14 +25,17 @@ print "1unooooo"
 #print RED
 #equ = cv2.equalizeHist(RED)
 #RED=equ
-RED = RED.astype('uint8')
 print "treees"
-print RED
+#print RED
 #cv2.imshow("IR",RED)
 
 img = cv2.merge((IR2.astype('uint8'),g2.astype('uint8'),RED.astype('uint8')))
 cv2.imwrite('imgResultante.jpg',img)
 funciones.loadImageAndNDVI(img,"dosImagenes"+nombre)
+resta = -cv2.equalizeHist(RED)+cv2.equalizeHist(RED2)
+print resta
+resta[resta<0]=0
+cv2.imwrite('Bandas/'+nombre+'Resta.jpg',resta)
 cv2.imwrite('Bandas/'+nombre+'IR.jpg',IR)
 #cv2.imshow("Blue",b)	
 cv2.imwrite('Bandas/'+nombre+'RED.jpg',RED)

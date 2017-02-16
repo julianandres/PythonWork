@@ -2,31 +2,33 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
 
-def colorGradeBGRMatPlot(ndvi):
+def colorGradeBGRMatPlot(ndvi,nombre):
+	ndvi=ndvi*4
+	data=ndvi+1
 	
-	data=ndvi
 	#mask = np.tri(data.shape[0], k=-6)
 	#print mask
 	#data = np.ma.masked_where(mask, data)
-	print data
-	vmax = 1.0
-	cmap = LinearSegmentedColormap.from_list('mycmap', [(-1 / vmax, 'blue'),
-		                                            (0 / vmax, 'green'),
-							    (0.5 / vmax, 'yellow'),
-		                                            (1 / vmax, 'red')]
+	
+	vmax = 2.0
+	cmap = LinearSegmentedColormap.from_list('mycmap', [(0 / vmax, '#000011'),
+							    (1 / vmax, '#0000AA'),
+		                                            (1 / vmax, 'green'),
+							    (1.5 / vmax, 'yellow'),
+		                                            (2 / vmax, 'red')]
 		                                )
 
-	print "hola2"
-	fig, ax = plt.subplots()
+	cmapvals=cmap._segmentdata
+	
+	fig, ax = plt.subplots(figsize=(50, 50))
 
 
-	im = ax.imshow(data, interpolation='nearest', cmap=cmap,vmin=0,vmax=vmax)
+	im = ax.imshow(data, cmap=cmap,vmin=0,vmax=vmax)
 	print "hola"
-	#im = ax.pcolor(data, cmap=cmap, vmin=0, vmax=vmax, edgecolors='black')
-	cbar = fig.colorbar(im)
-	print "hola3"
-	cbar.set_ticks(range(5)) # Integer colorbar tick locations
-	ax.set(frame_on=False, aspect=1, xticks=[], yticks=[])
+	#im = ax.pcolor(data, cmap=cmap, vmin=0, vmax=vmax)
+	cbar = fig.colorbar(im, ticks=[0, 1, 2], orientation='horizontal')
+	cbar.ax.set_xticklabels(['-1', '0', '1',])  # horizontal colorbar
 	print "hola4"
+	plt.savefig("ResultadosNDVI/"+nombre+"MatploTNDVI.png")	
 	plt.show()
-	plt.savefig("hola.png")
+	

@@ -1,0 +1,195 @@
+import time
+import numpy as np
+from matplotlib import pyplot as plt
+import cv2
+import funciones
+
+
+def count(imagen,vueltas,prom):
+	if vueltas == 1 :
+		#cv2.imshow('imgRed',r)
+		kernel = np.ones((4,7),np.uint8)
+		kernel2 = np.ones((1,1),np.uint8)
+		kernel3 = np.ones((2,2),np.uint8)
+		#cv2.imshow('Thresholded', imagen)
+		##############################
+		opening = cv2.morphologyEx(imagen,cv2.MORPH_OPEN,kernel, iterations = 4)#transformacion morfologica para eliminar ruido
+		closing = cv2.morphologyEx(opening,cv2.MORPH_CLOSE,kernel3, iterations = 4)#transformacion morfologica para eliminar ruido
+		#erosion = cv2.erode(closing,kernel2,iterations = 2)
+		cv2.imwrite('probe2openVuelta1.jpg',closing)
+                ##########################################################
+    	else : 
+	       if vueltas == 2 :
+			kernel = np.ones((4,7),np.uint8)
+			kernel2 = np.ones((1,1),np.uint8)
+			##############################
+
+			opening = cv2.morphologyEx(imagen,cv2.MORPH_OPEN,kernel, iterations = 4)
+			#closing = cv2.morphologyEx(opening,cv2.MORPH_CLOSE,kernel3, iterations = 4)
+			#erosion = cv2.erode(closing,kernel2,iterations = 2)
+			closing = opening
+			cv2.imwrite('probe2openVuelta2.jpg',opening)
+	       else: 
+		       if vueltas == 3 :
+				kernel = np.ones((3,4),np.uint8)
+				opening = cv2.morphologyEx(imagen,cv2.MORPH_OPEN,kernel, iterations = 1)
+				#closing = cv2.morphologyEx(opening,cv2.MORPH_CLOSE,kernel3, iterations = 4)
+				#erosion = cv2.erode(closing,kernel2,iterations = 2)
+				closing = opening
+				cv2.imwrite('probe2openVuelta3.jpg',opening)
+				##########################################################
+		       else:
+			   
+				kernel = np.ones((1,1),np.uint8)
+				##############################
+				opening = cv2.morphologyEx(imagen,cv2.MORPH_OPEN,kernel, iterations = 1)
+				closing = opening
+				cv2.imwrite('probe2openVuelta4.jpg',opening)	
+				##########################################################
+	kernel3 = np.ones((1,1),np.uint8)
+        sure_bg = cv2.dilate(closing,kernel3,iterations=2)
+	dist_transform = cv2.distanceTransform(closing,cv2.DIST_L2,5)
+	#ret, sure_fg = cv2.threshold(dist_transform,0.7*dist_transform.max(),255,0)
+	#cv2.imshow('dist', dist_transform)
+	#cv2.imwrite('dist.jpg', dist_transform)
+	ret, sure_fg = cv2.threshold(dist_transform,0.1*dist_transform.max(),255,0)
+	#cv2.imshow('sure_fg', sure_fg)
+	# Finding unknown region
+	sure_fg = np.uint8(sure_fg)
+	unknown = cv2.subtract(sure_bg,sure_fg)
+	#cv2.imshow('unknown',unknown)
+	# Marker labelling
+	ret, markers = cv2.connectedComponents(sure_fg)
+
+	# Add one to all labels so that sure background is not 0, but 1
+	markers = markers+1
+	# Now, mark the region of unknown with zero
+	markers[unknown==255] = 0
+	markers = cv2.watershed(imgOriginal,markers)
+	print("[INFO] {} unique segments found".format(len(np.unique(markers)) - 1))
+	####################################################################3
+	radios = np.zeros(len(np.unique(markers)),dtype='Float64')
+	i=0
+	if vueltas == 1 :
+		for label in np.unique(markers):
+			# if the label is zero, we are examining the 'background'
+			# so simply ignore it
+			if label == 0:
+				continue
+	
+			# otherwise, allocate memory for the label region and draw
+			# it on the mask
+			mascara1 = np.zeros(grey.shape, dtype="uint8")
+			mascara1[markers == label] = 255
+			#print i
+			#print str(i)+"i"
+		 	#print str(label)+"label"
+			# print radio
+			# detect contours in the mask and grab the largest one
+			cnts = cv2.findContours(mascara1.copy(), cv2.RETR_EXTERNAL,
+				cv2.CHAIN_APPROX_SIMPLE)[-2]
+			c = max(cnts, key=cv2.contourArea)
+			# draw a circle enclosing the object
+			((x, y), r) = cv2.minEnclosingCircle(c)
+			if label>0 and label!=1 :
+			   radios[i]= r
+		 	i=i+1
+
+		acumulado=0
+		denominador=0
+	 	for item in radios:
+			if item!=0 :
+			    acumulado=acumulado+item
+			    denominador = denominador +1
+
+		print acumulado
+		print denominador
+		promedio = acumulado/denominador
+	else : 
+		promedio = prom
+
+	mascaraSuperior = np.zeros(grey.shape, dtype="uint8")
+	mascaraInferior = np.zeros(grey.shape, dtype="uint8")
+
+	for label in np.unique(markers):
+		# if the label is zero, we are examining the 'background'
+		# so simply ignore it
+
+		if label == 0:
+			continue
+		# otherwise, allocate memory for the label region and draw
+		# it on the mask
+		mascara = np.zeros(grey.shape, dtype="uint8")
+	
+		mascara[markers == label] = 255
+		#print mascara
+	
+		#print radio
+		# detect contours in the mask and grab the largest one
+		cnts = cv2.findContours(mascara.copy(), cv2.RETR_EXTERNAL,
+			cv2.CHAIN_APPROX_SIMPLE)[-2]
+
+		c = max(cnts, key=cv2.contourArea)
+
+	
+		# draw a circle enclosing the object
+		((x, y), r) = cv2.minEnclosingCircle(c)
+		if label>0 and label!=1 and r>promedio:
+		    #print ('el valor de' +str(r)+ 'es superior al promedio '+str(promedio))
+		    mascaraSuperior = mascara + mascaraSuperior
+		    #cv2.imwrite('mask.jpg',mascara)
+		if label>0 and label!=1 and r<=promedio:
+		    #print ('el valor de' +str(r)+ 'es inferior al promedio '+str(promedio))
+		    mascaraInferior = mascara + mascaraInferior
+
+
+	#cv2.imshow('maskSuperior',mascaraSuperior)
+	#cv2.imshow('maskInferior',mascaraInferior)
+	return mascaraSuperior,mascaraInferior,promedio
+
+base='probes/probeBands/'
+nombre='dobleCamNoirTercero'
+extension='.jpg'
+imgOriginal = cv2.imread(base+nombre+extension)            # read next frame
+
+b, g, r = cv2.split(imgOriginal)
+
+
+#print "siguiente"
+
+img = b
+cv2.imshow('img',img)
+grey = cv2.cvtColor(imgOriginal, cv2.COLOR_BGR2GRAY)
+value = (35, 35)
+_,th1 = cv2.threshold(img, 0, 255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+
+
+mascSup,mascInf,prome = count(th1,1,0)
+#cv2.imshow('mascSup',mascSup)
+#cv2.imshow('mascInf',mascInf)
+mascSup,mascInf2,pr = count(mascSup,1,prome)
+#cv2.imshow('mascSup2',mascSup)
+#cv2.imshow('mascInf2',mascInf2)
+
+mascSup,mascInf3,pr = count(mascSup,2,prome)
+#cv2.imshow('mascSup3',mascSup)
+#cv2.imshow('mascInf3',mascInf3)
+mascSup,mascInf4,pr = count(mascSup,2,prome)
+#cv2.imshow('mascSup4',mascSup)
+#cv2.imshow('mascInf4',mascInf4)
+mascSup,mascInf5,pr = count(mascSup,2,prome)
+#cv2.imshow('mascSup5',mascSup)
+#cv2.imshow('mascInf5',mascInf5)
+mascSup,mascInf6,pr = count(mascSup,2,prome)
+#cv2.imshow('mascSup6',mascSup)
+#cv2.imshow('mascInf6',mascInf6)
+
+imagen = mascSup+mascInf2+mascInf+mascInf3+mascInf4+mascInf5+mascInf6
+cv2.imshow('mascara final',imagen)
+cv2.imwrite('mascara final.jpg',imagen)
+
+#cv2.imshow('mascara final',imagen)
+c = cv2.waitKey(7) % 0x100
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+#print "siguiente"
