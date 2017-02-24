@@ -5,8 +5,8 @@ import cv2
 import funciones
 
 
-base='probes/probeBands/'
-nombre='17FebNoirSol'
+base='probes/'
+nombre='yaguara1'
 extension='.jpg'
 imgOriginal = cv2.imread(base+nombre+extension)            # read next frame
 b, g, r = cv2.split(imgOriginal)

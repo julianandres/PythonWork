@@ -6,7 +6,7 @@ import funciones
 
 
 base='probes/probeBands/'
-nombre='17FebNoirSol'
+nombre='yaguara1'
 extension='.jpg'
 imgOriginal = cv2.imread(base+nombre+extension)            # read next frame
 b, g, r = cv2.split(imgOriginal)
@@ -21,3 +21,4 @@ c = cv2.waitKey(7) % 0x100
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 #print "siguiente"
+

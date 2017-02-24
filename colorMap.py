@@ -3,7 +3,7 @@ import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
 
 def colorGradeBGRMatPlot(ndvi,nombre):
-	ndvi=ndvi*7
+	ndvi=ndvi
 	data=ndvi+1
 	
 	#mask = np.tri(data.shape[0], k=-6)

@@ -221,10 +221,11 @@ def loadImageAndNDVIUnaImagenAWB11(img,nombre):
 	
 	IR,g,RED = cv2.split(img)
 	#print img.shape
-        IR = IR*1.1
-	RED = RED*0.54
-	#RED = cv2.equalizeHist(RED)
+        IR = IR
 	cv2.imwrite('Bandas/'+nombre+'REDPrev.jpg',RED)
+	RED = RED.astype('int')-IR.astype('int')*1.1
+	#RED = cv2.equalizeHist(RED)
+	
 	
 	#RED = cv2.equalizeHist(RED)*0.4
 	print "redprevio"
@@ -324,8 +325,12 @@ def loadImageAndNDVIFilterBlueAWB11(img,nombre):
         #IR = cv2.equalizeHist(IR)
 	
 	#RED = cv2.equalizeHist(RED)
-	blue=blue
-	IR=IR*0.9
+	print blue
+	print IR
+	blue=blue.astype('int')-IR.astype('int')
+	blue[blue<0]=0
+	print blue
+	IR=IR*1
 	print "redprevio"
 	
 	#cv2.imshow("IR",RED)

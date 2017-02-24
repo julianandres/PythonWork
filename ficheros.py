@@ -1,5 +1,6 @@
 from os import walk
 from os import listdir
+import funciones
 contador =0
 
 user="julian"
@@ -54,6 +55,7 @@ def revisarSubProceso(pathsubproceso,namesubprocess):
 			#colocar funcion de trabajo
 			pathFotoRGB=pathFotoRGB+"/"+archivosRGB[0]
 		        pathFotoNoir=pathFotoNoir+"/"+archivosNoir[0]
+			
 			print pathFotoNoir
 		    	print "exitoso" 
 		    	return 0
