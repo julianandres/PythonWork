@@ -5,10 +5,11 @@ import cv2
 import funciones
 
 base='probes/probeBands/'
-nombre2='separarConDosFiltersNoir'
+nombre='23febRGBSolNoawb'
 extension='.jpg'
+
 base2='probes/probeBands/'
-nombre='dobleCamRGBTercero'
+nombre2='17FebNoirSol'
 extension2='.jpg'
 print base+nombre+extension
 img = cv2.imread(base+nombre+extension) #banda roja normal

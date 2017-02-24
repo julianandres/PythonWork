@@ -4,10 +4,10 @@ from matplotlib import pyplot as plt
 import cv2
 import funciones
 base='probes/probeBands/'
-nombre='separarConDosFiltersNoir'
+nombre='23febRGBSolconAWB'
 extension='.jpg'
 base2='probes/probeBands/'
-nombre2='dobleCamNoirTercero'
+nombre2='23febRGBSolNoawb'
 extension2='.jpg'
 print base+nombre+extension
 img = cv2.imread(base+nombre+extension) #banda IRRojo
@@ -35,16 +35,16 @@ resta[resta<0]=0
 resta[resta>255]=0
 cv2.imwrite('Bandas/restaPrueba/'+nombre+'Resta.jpg',resta)
 
-funciones.loadImageAndNDVIFilterBlue(img,"filterBlue"+nombre)
+#funciones.loadImageAndNDVIFilterBlue(img,"filterBlue"+nombre)
 cv2.imwrite('Bandas/restaPrueba/'+nombre+'IR.jpg',IR)
 #cv2.imshow("Blue",b)	
 cv2.imwrite('Bandas/restaPrueba/'+nombre+'Red.jpg',RED)
 #cv2.imshow("Green",g)
 cv2.imwrite("Bandas/restaPrueba/"+nombre+"Green.jpg",g)
-
-cv2.imwrite('Bandas/restaPrueba/'+nombre+'IR.jpg',IR2)
+print "hola"
+cv2.imwrite('Bandas/restaPrueba/'+nombre2+'IR.jpg',IR2)
 #cv2.imshow("Blue",b)	
-cv2.imwrite('Bandas/restaPrueba/'+nombre+'Red.jpg',RED2)
+cv2.imwrite('Bandas/restaPrueba/'+nombre2+'Red.jpg',RED2)
 #cv2.imshow("Green",g)
-cv2.imwrite("Bandas/restaPrueba/"+nombre+"Green.jpg",g2)
+cv2.imwrite("Bandas/restaPrueba/"+nombre2+"Green.jpg",g2)
 # calculate the ndvi and get the color graded version

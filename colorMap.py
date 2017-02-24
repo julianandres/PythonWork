@@ -3,7 +3,7 @@ import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
 
 def colorGradeBGRMatPlot(ndvi,nombre):
-	ndvi=ndvi
+	ndvi=ndvi*7
 	data=ndvi+1
 	
 	#mask = np.tri(data.shape[0], k=-6)
@@ -18,9 +18,9 @@ def colorGradeBGRMatPlot(ndvi,nombre):
 		                                            (2 / vmax, 'red')]
 		                                )
 
-	cmapvals=cmap._segmentdata
+	#cmapvals=cmap._segmentdata
 	
-	fig, ax = plt.subplots(figsize=(50, 50))
+	fig, ax = plt.subplots(figsize=(10, 10))
 
 
 	im = ax.imshow(data, cmap=cmap,vmin=0,vmax=vmax)
@@ -29,6 +29,6 @@ def colorGradeBGRMatPlot(ndvi,nombre):
 	cbar = fig.colorbar(im, ticks=[0, 1, 2], orientation='horizontal')
 	cbar.ax.set_xticklabels(['-1', '0', '1',])  # horizontal colorbar
 	print "hola4"
-	plt.savefig("ResultadosNDVI/"+nombre+"MatploTNDVI.png")	
+	plt.savefig("ResultadosNDVI/ResMatPlot/"+nombre+"MatploTNDVI.png")	
 	plt.show()
 	

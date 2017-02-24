@@ -6,7 +6,7 @@ import funciones
 
 
 base='probes/probeBands/'
-nombre='NoirFilterBlueSol'
+nombre='23febNoirFilterBlue'
 extension='.jpg'
 imgOriginal = cv2.imread(base+nombre+extension)            # read next frame
 b, g, r = cv2.split(imgOriginal)
@@ -19,4 +19,4 @@ funciones.loadImageAndNDVIFilterBlueAWB11(imgOriginal,nombre)
 c = cv2.waitKey(7) % 0x100
 cv2.waitKey(0)
 cv2.destroyAllWindows()
-#print "siguiente"
+#print "siguiente"	

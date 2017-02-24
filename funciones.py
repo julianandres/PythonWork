@@ -139,10 +139,11 @@ def calculateNDVI(VISframe, IRframe, grading,original,nombre):
     numerator = fIR-fVIS
     #numerator = fIR-fBLUE
     #print numerator
-    denumerator = fIR+fVis
-    fraction = cv2.divide(numerator, denumerator)
+    denumerator = fIR+fVIS
+    denumerator[denumerator == 0] = 0.01
+    fraction = numerator/denumerator
     print "ndviProbeuno"
-    #print fraction
+    print fraction
     print "ndviProbeuno"
     NDVIframe = fraction
     #NDVIframe = ndvi
@@ -173,7 +174,7 @@ def loadImageAndNDVI(img,nombre):
 	cv2.imwrite('Bandas/'+nombre+'REDPrev.jpg',RED)
 	RED = RED
 	#RED = cv2.equalizeHist(RED)
-	IR=IR
+	IR=IR*1.1
 	print "redprevio"
 	
 	#cv2.imshow("IR",RED)
@@ -218,14 +219,12 @@ def loadImageAndNDVI(img,nombre):
 def loadImageAndNDVIUnaImagenAWB11(img,nombre):
 	print "IMGAnDNDVI"
 	
-
 	IR,g,RED = cv2.split(img)
 	#print img.shape
-        IR = IR
-	RED = RED
+        IR = IR*1.1
+	RED = RED*0.54
 	#RED = cv2.equalizeHist(RED)
 	cv2.imwrite('Bandas/'+nombre+'REDPrev.jpg',RED)
-	RED = (RED)-g
 	
 	#RED = cv2.equalizeHist(RED)*0.4
 	print "redprevio"
@@ -280,6 +279,7 @@ def loadImageAndNDVIFilterBlue(img,nombre):
 	
 	#RED = cv2.equalizeHist(RED)
 	IR=IR
+	blue=blue
 	print "redprevio"
 	
 	#cv2.imshow("IR",RED)
@@ -325,7 +325,7 @@ def loadImageAndNDVIFilterBlueAWB11(img,nombre):
 	
 	#RED = cv2.equalizeHist(RED)
 	blue=blue
-	IR=IR
+	IR=IR*1
 	print "redprevio"
 	
 	#cv2.imshow("IR",RED)

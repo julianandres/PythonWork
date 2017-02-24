@@ -1,0 +1,45 @@
+import time
+import numpy as np
+from matplotlib import pyplot as plt
+import cv2
+import funciones
+
+base='probes/probeBands/'
+nombre='23FebRGBSolNoawb2'
+extension='.jpg'
+
+base2='probes/probeBands/'
+nombre2='23febNoirFilterBlue'
+extension2='.jpg'
+print base+nombre+extension
+img = cv2.imread(base+nombre+extension) #banda roja normal
+print base2+nombre2+extension2
+img2 = cv2.imread(base2+nombre2+extension2) #banda infraroja
+
+IR,g,RED = cv2.split(img)
+IR2,g2,RED2 = cv2.split(img2)
+
+img = cv2.merge((IR.astype('uint8'),g.astype('uint8'),RED2.astype('uint8')))
+cv2.imwrite('imgResultante.jpg',img)
+
+resta = RED2-RED
+print resta
+resta[resta<0]=0
+resta[resta>255]=0
+cv2.imwrite('Bandas/restaPrueba/'+nombre+'Resta.jpg',resta)
+
+funciones.loadImageAndNDVIFilterBlue(img,"filterBlue"+nombre)
+img = cv2.merge((IR.astype('uint8'),g.astype('uint8'),RED2.astype('uint8')))
+cv2.imwrite('imgResultante.jpg',img)
+
+cv2.imwrite('Bandas/'+nombre+'IR.jpg',IR)
+#cv2.imshow("Blue",b)	
+cv2.imwrite('Bandas/'+nombre+'RED.jpg',RED)
+#cv2.imshow("Green",g)
+cv2.imwrite("Bandas/"+nombre+"Green.jpg",g)
+cv2.imwrite('Bandas/'+nombre2+'IR.jpg',IR2)
+#cv2.imshow("Blue",b)	
+cv2.imwrite('Bandas/'+nombre2+'RED.jpg',RED2)
+#cv2.imshow("Green",g)
+cv2.imwrite("Bandas/"+nombre2+"Green.jpg",g2)
+# calculate the ndvi and get the color graded version

@@ -1,0 +1,74 @@
+from os import walk
+from os import listdir
+contador =0
+
+user="julian"
+path = "/home/julian/"+user+"/"
+#se saca la lista de procesos
+def listdirr(usuario):
+	procesos=listdir(usuario)
+	#para cada proceso en esta lista
+	for proceso in procesos:
+		subprocesos=listdir(path+proceso)#se obtiene la lista de subprocesos
+		for subproceso in subprocesos:
+			if(revisarSubProceso(path+proceso+"/"+subproceso+"/",subproceso)==1):
+				print "No existe la suficiente informaci0n para procesar"+subproceso
+			else:
+				print "procesado"
+
+
+#para cada subproceso se revisa si esta ya procesado			
+
+	# revisando los procesos de cada usuario
+	
+def revisarSubProceso(pathsubproceso,namesubprocess):
+	contador =0
+	for (path, ficheros, archivos) in walk(pathsubproceso):
+	    contador=contador+1
+	    print contador
+	    print path
+	    print len(ficheros)
+	    print archivos	
+	    if (contador==1) :  
+	    	if (len(ficheros)==0) :
+		    return 1
+	    	elif(len(ficheros)==1):
+		    return 1
+		elif(len(ficheros)==2):
+		    print "revisando"+namesubprocess
+		    archivosNoir=0
+		    archivosRGB=0
+	            pathFotoNoir=""
+		    pathFotoRGB=""
+		    if(ficheros[0]=="FotoNoir"):
+			archivosNoir=listdir(pathsubproceso+ficheros[0])
+			pathFotoNoir=path+ficheros[0]
+			archivosRGB=listdir(pathsubproceso+ficheros[1])
+			pathFotoRGB=path+ficheros[1]			
+		    else:
+			archivosNoir=listdir(pathsubproceso+ficheros[1])
+			pathFotoNoir=path+ficheros[1]
+			archivosRGB=listdir(pathsubproceso+ficheros[0])
+			pathFotoRGB=path+ficheros[0]
+
+		    print ficheros[0]
+		    print ficheros[1]
+		    print archivosNoir
+		    if((len(archivosNoir)>0) and (len(archivosRGB)>0)) :
+			#colocar funcion de trabajo
+			pathFotoRGB=pathFotoRGB+"/"+archivosRGB[0]
+		        pathFotoNoir=pathFotoNoir+"/"+archivosNoir[0]
+			print pathFotoNoir
+		    	print "exitoso" 
+		    	return 0
+		    else: 
+			print "fracasado"
+			return 1
+		else:
+		    print "mayor a 3"
+		    return 1
+		    	
+			
+	
+listdirr(path)
+
