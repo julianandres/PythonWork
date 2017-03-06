@@ -1,4 +1,4 @@
 
 source ~/.bashrc
-python /home/julian/PythonWork/CalcNDVIWebRedFilter.py "${1}"
+python /home/julianbolanos/PythonWork/CalcNDVIWebRedFilter.py "${1}"
 
