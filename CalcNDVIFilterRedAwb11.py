@@ -1,20 +1,24 @@
+import sys
+
+sys.path.append('/usr/local/lib/python2.7/site-packages')
 import time
 import numpy as np
 from matplotlib import pyplot as plt
 import cv2
 import funciones
 
+print sys.argv
 
+pathproject=sys.argv[1]
 base='probes/'
 nombre='yaguara1'
 extension='.jpg'
-imgOriginal = cv2.imread(base+nombre+extension)            # read next frame
+imgOriginal = cv2.imread(pathproject+base+nombre+extension)            # read next frame
 b, g, r = cv2.split(imgOriginal)
 #cv2.imshow('Original',imgOriginal)
-cv2.imwrite('original.jpg',imgOriginal)
 
 #funciones.loadImageAndNDVIUnaImagenAWB11(imgOriginal,nombre)
-funciones.loadImageAndNDVIUnaImagenAWB11(imgOriginal,nombre)
+funciones.loadImageAndNDVIUnaImagenAWB11(imgOriginal,nombre,pathproject)
 
 #plt.show()
 c = cv2.waitKey(7) % 0x100

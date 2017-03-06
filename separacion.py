@@ -1,3 +1,7 @@
+
+import sys
+sys.path.append('/usr/lib/python2.7/site-packages')
+print sys.path
 import time
 import numpy as np
 from matplotlib import pyplot as plt

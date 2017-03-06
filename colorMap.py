@@ -2,8 +2,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
 
-def colorGradeBGRMatPlot(ndvi,nombre):
-	ndvi=ndvi
+def colorGradeBGRMatPlot(ndvi,nombre,multiplo,pathproject):
+	ndvi=ndvi*multiplo
 	data=ndvi+1
 	
 	#mask = np.tri(data.shape[0], k=-6)
@@ -29,6 +29,6 @@ def colorGradeBGRMatPlot(ndvi,nombre):
 	cbar = fig.colorbar(im, ticks=[0, 1, 2], orientation='horizontal')
 	cbar.ax.set_xticklabels(['-1', '0', '1',])  # horizontal colorbar
 	print "hola4"
-	plt.savefig("ResultadosNDVI/ResMatPlot/"+nombre+"MatploTNDVI.png")	
+	plt.savefig(pathproject+"ResultadosNDVI/ResMatPlot/"+nombre+"MatploTNDVI.png")	
 	plt.show()
 	
