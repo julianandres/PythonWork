@@ -140,7 +140,7 @@ def calculateNDVI(VISframe, IRframe, grading,original,nombre):
     #numerator = fIR-fBLUE
     #print numerator
     denumerator = fIR+fVIS
-    denumerator[denumerator == 0] = 0.01
+    denumerator[denumerator == 0] = 1
     fraction = numerator/denumerator
     print "ndviProbeuno"
     print fraction
@@ -149,6 +149,14 @@ def calculateNDVI(VISframe, IRframe, grading,original,nombre):
     #NDVIframe = ndvi
     #cv2.imshow('NDVImetodo2',NDVIframe)
     #cv2.imwrite('NDVImetodo2.jpg',NDVIframe)
+    fraction=0
+    fVIS=0
+    fIR=0
+    VISframe=0
+    IRframe=0
+    numerator=0
+    denumerator=0
+    original=0
     
 
     # apply additional grading
@@ -160,9 +168,10 @@ def calculateNDVI(VISframe, IRframe, grading,original,nombre):
         NDVIframeG = colorGradeBGR(NDVIframe)
     else:
     	print "NO"
-        NDVIframeG = NDVIframe
+        #NDVIframeG = NDVIframe
 
-    return NDVIframe, NDVIframeG
+    
+    return NDVIframe, NDVIframe
 
 def loadImageAndNDVIRedFilter1054(img,nombre,pathproject):
 	print "IMGAnDNDVI"
@@ -171,25 +180,15 @@ def loadImageAndNDVIRedFilter1054(img,nombre,pathproject):
 	#print img.shape
         #IR = cv2.equalizeHist(IR)
 	cv2.imwrite('Bandas/'+nombre+'REDPrev.jpg',RED)
-	RED = 2.5*RED.astype('int')-1.5*g.astype('int')
+	RED = 2.5*RED.astype('int')-1.3*g.astype('int')
 	#RED = cv2.equalizeHist(RED)
-	IR=IR
 	print "redprevio"
 	
 	#cv2.imshow("IR",RED)
 	
 	img = cv2.merge((IR.astype('int'),g.astype('int'),RED.astype('int')))
 	cv2.imwrite('ResultantesNGB/'+nombre+'imgResultanteFilterRedAWB1054.jpg',img)
-
-	# calculate the ndvi and get the color graded version
-	ndvi1, ndvi2 = calculateNDVI(RED,IR,"BGR",img,nombre)
-
-	colorMap.colorGradeBGRMatPlot(ndvi1,nombre,1,pathproject,"FilterRedAWB1054")
-
-
-	# scale the NDVI from [-1;1] to [0;1] for propper display
-	ndvi1 = cv2.add(ndvi1, 1.0)
-	ndvi1 = cv2.divide(ndvi1, 2.0)
+	
 	cv2.imwrite('Bandas/pruebasFiltroRojo/'+nombre+'IRFilterRedAWB1054.jpg',IR)
 	#cv2.imshow("Blue",b)	
 	cv2.imwrite('Bandas/pruebasFiltroRojo/'+nombre+'REDFilterRedAWB1054.jpg',RED)
@@ -198,18 +197,17 @@ def loadImageAndNDVIRedFilter1054(img,nombre,pathproject):
 	# show the results
 	#cv2.imshow("NDVI",ndvi1)
 	#cv2.imshow("NDVI2",ndvi2)
+	ndvi1, ndvi2 = calculateNDVI(RED,IR,"NO",img,nombre)
+	del img,IR,g,RED,ndvi2
+	img=False
+	IR=False
+	g=False
+	RED=False
+	ndvi2=False
+	print "free memory"
+	colorMap.colorGradeBGRMatPlot(ndvi1,nombre,1,pathproject,"FilterRedAWB1054")
 
-	#transpose to [0;255] to save as 8bit
-	ndvi1 = cv2.multiply(ndvi1, 255)
-
-	ndvi2 = cv2.multiply(ndvi2, np.array([255.0,255.0,255.0,0.0]))
-	#print "ndvi2"
-	#print ndvi1
 	
-	# convert back to 8bit
-	intNDVI = ndvi1.astype(np.uint8)
-	intNDVI2 = ndvi2.astype(np.uint8)
-	img_map =  cv2.applyColorMap (intNDVI, cv2.COLORMAP_HSV)
 	#cv2.imshow("COLORMAP",img_map)
 	# write to disc
         print "writing Images"
@@ -221,7 +219,9 @@ def loadImageAndNDVIUnaImagenAWB11(img,nombre,pathproject):
 	#print img.shape
         IR = IR
 	cv2.imwrite(pathproject+'Bandas/'+nombre+'REDPrevFilterRedAWB11.jpg',RED)
-	RED = RED.astype('int')-g.astype('int')*1.1
+	RED=RED.astype('int')
+	RED=RED*0.56
+	RED = 2.3*(RED)-1.6*(g.astype('int'))
 	#RED = cv2.equalizeHist(RED)
 	
 	
@@ -232,17 +232,18 @@ def loadImageAndNDVIUnaImagenAWB11(img,nombre,pathproject):
 	
 	img = cv2.merge((IR.astype('int'),g.astype('int'),RED.astype('int')))
 	cv2.imwrite(pathproject+'ResultantesNGB/'+nombre+'imgResultanteFilterRedAWB11.jpg',img)
-
+	
 	cv2.imwrite(pathproject+'Bandas/pruebasFiltroRojo/'+nombre+'IRFilterRedAWB11.jpg',IR)
 	#cv2.imshow("Blue",b)	
 	cv2.imwrite(pathproject+'Bandas/pruebasFiltroRojo/'+nombre+'REDFilterRedAWB11.jpg',RED)
 	#cv2.imshow("Green",g)
 	cv2.imwrite(pathproject+"Bandas/pruebasFiltroRojo/"+nombre+"GreenFilterRedAWB11.jpg",g)
 	# calculate the ndvi and get the color graded version11
-	ndvi1, ndvi2 = calculateNDVI(RED,IR,"BGR",img,nombre)
+	ndvi1, ndvi2 = calculateNDVI(RED,IR,"NO",img,nombre)
+	del img,IR,g,RED,ndvi2
+	print "delete memory"
 
-
-	colorMap.colorGradeBGRMatPlot(ndvi1,nombre,1.4,pathproject,"FilterRedAWB11")
+	colorMap.colorGradeBGRMatPlot(ndvi1,nombre,1,pathproject,"FilterRedAWB11")
 
 
 	# scale the NDVI from [-1;1] to [0;1] for propper display

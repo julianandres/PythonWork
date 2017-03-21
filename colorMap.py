@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import sys
 from matplotlib.colors import LinearSegmentedColormap
 
 def colorGradeBGRMatPlot(ndvi,nombre,multiplo,pathproject,tipofoto):
@@ -20,15 +21,22 @@ def colorGradeBGRMatPlot(ndvi,nombre,multiplo,pathproject,tipofoto):
 
 	#cmapvals=cmap._segmentdata
 	
-	fig, ax = plt.subplots(figsize=(10, 10))
-
-
+	fig, ax = plt.subplots(figsize=(20, 20))
+	del ndvi
 	im = ax.imshow(data, cmap=cmap,vmin=0,vmax=vmax)
 	print "hola"
+	#del cmap
 	#im = ax.pcolor(data, cmap=cmap, vmin=0, vmax=vmax)
 	cbar = fig.colorbar(im, ticks=[0, 1, 2], orientation='horizontal')
 	cbar.ax.set_xticklabels(['-1', '0', '1',])  # horizontal colorbar
-	print "hola4"
-	plt.savefig(pathproject+"ResultadosNDVI/ResMatPlot/"+tipofoto+nombre+"MatploTNDVI.png")	
-	plt.show()
+	print "syse"
+	print sys.getsizeof(im)
+	print sys.getsizeof(fig)
+	print sys.getsizeof(ax)
+	print sys.getsizeof(data)
+	#plt.show()	
+	plt.savefig(pathproject+"ResultadosNDVI/ResMatPlot/"+tipofoto+nombre+"MatploTNDVI.jpg")	
+	fig.clf()
+	plt.close()
+	
 	

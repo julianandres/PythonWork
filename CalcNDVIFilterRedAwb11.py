@@ -9,7 +9,7 @@ import funciones
 
 pathproject="/home/julian/PythonWork/"
 base='probes/probeNDVIRedFilter/'
-nombre='marzo16sinsol'
+nombre='mosaicYaguara'
 extension='.jpg'
 imgOriginal = cv2.imread(pathproject+base+nombre+extension)            # read next frame
 b, g, r = cv2.split(imgOriginal)
