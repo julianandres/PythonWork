@@ -221,7 +221,7 @@ def loadImageAndNDVIUnaImagenAWB11(img,nombre,pathproject):
 	
 	IR,g,RED = cv2.split(img)
 	#print img.shape
-        IR = IR
+        #IR = IR
 	cv2.imwrite(pathproject+'Bandas/'+nombre+'REDPrev.jpg',RED)
 	RED = RED.astype('int')-g.astype('int')*1.1
 	#RED = cv2.equalizeHist(RED)

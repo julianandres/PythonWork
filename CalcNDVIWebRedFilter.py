@@ -17,13 +17,11 @@ if((len(archivosNoir)>0) and (len(archivosRGB)>0)) :
 	pathFotoRGB=pathproject+'FotoRGB'+"/"+archivosRGB[0]
 	pathFotoNoir=pathproject+'FotoNoir'+"/"+archivosNoir[0]
 	imgOriginal = cv2.imread(pathFotoNoir)            # read next frame
-	b, g, r = cv2.split(imgOriginal)
+	#b, g, r = cv2.split(imgOriginal)
 	#cv2.imshow('Original',imgOriginal)
 	#funciones.loadImageAndNDVIUnaImagenAWB11(imgOriginal,nombre)
 	funciones.loadImageAndNDVIUnaImagenAWB11(imgOriginal,"prueba",pathproject)
-	#plt.show()
-	c = cv2.waitKey(7) % 0x100
-	cv2.waitKey(0)
-	cv2.destroyAllWindows()
+	
+	#cv2.destroyAllWindows()
 	#print "siguiente"
 

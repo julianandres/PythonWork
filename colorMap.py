@@ -30,5 +30,5 @@ def colorGradeBGRMatPlot(ndvi,nombre,multiplo,pathproject):
 	cbar.ax.set_xticklabels(['-1', '0', '1',])  # horizontal colorbar
 	print "hola4"
 	plt.savefig(pathproject+"ResultadosNDVI/ResMatPlot/"+nombre+"MatploTNDVI.png")	
-	plt.show()
+	#plt.show()
 	
