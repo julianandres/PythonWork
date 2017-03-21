@@ -20,8 +20,8 @@ if((len(archivosNoir)>0) and (len(archivosRGB)>0)) :
 	#b, g, r = cv2.split(imgOriginal)
 	#cv2.imshow('Original',imgOriginal)
 	#funciones.loadImageAndNDVIUnaImagenAWB11(imgOriginal,nombre)
-	funciones.loadImageAndNDVIUnaImagenAWB11(imgOriginal,"prueba",pathproject)
-	
+	funciones.loadImageAndNDVIUnaImagenAWB1054(imgOriginal,"prueba",pathproject)
+	imgOriginal=0;
 	#cv2.destroyAllWindows()
 	#print "siguiente"
 

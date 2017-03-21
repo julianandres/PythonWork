@@ -7,11 +7,9 @@ from matplotlib import pyplot as plt
 import cv2
 import funciones
 
-print sys.argv
-
-pathproject=sys.argv[1]
-base='probes/'
-nombre='yaguara1'
+pathproject="/home/julian/PythonWork/"
+base='probes/probeNDVIRedFilter/'
+nombre='mosaicYaguara'
 extension='.jpg'
 imgOriginal = cv2.imread(pathproject+base+nombre+extension)            # read next frame
 b, g, r = cv2.split(imgOriginal)
