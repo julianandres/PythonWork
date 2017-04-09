@@ -5,8 +5,8 @@ import cv2
 import funciones
 
 pathproject="/home/julian/PythonWork/"
-base='probes/probeNDVIBlueFilter/'
-nombre='23febNoirFilterBlue'
+base='probes/probeBands/'
+nombre='17febNoirBlue'
 extension='.jpg'
 imgOriginal = cv2.imread(pathproject+base+nombre+extension)            # read next frame
 b, g, r = cv2.split(imgOriginal)

@@ -6,8 +6,8 @@ import funciones
 import sys
 
 pathproject="/home/julian/PythonWork/"
-base='probes/probeNDVIRedFilter/'
-nombre='mosaicoYaguara2'
+base='probes/probeBands/'
+nombre='17febNoirSol'
 extension='.jpg'
 imgOriginal = cv2.imread(pathproject+base+nombre+extension)            # read next frame
 #cv2.imshow('Original',imgOriginal)
@@ -16,7 +16,8 @@ print sys.getsizeof(imgOriginal)
 #funciones.loadImageAndNDVIUnaImagenAWB11(imgOriginal,nombre)
 funciones.loadImageAndNDVIRedFilter1054(imgOriginal,nombre,pathproject)
 
-del imgOriginal
+imgOriginal=0;
+print sys.getsizeof(imgOriginal)
 #plt.show()
 
 #print "siguiente"
