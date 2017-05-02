@@ -5,7 +5,7 @@ import cv2
 import funciones
 import sys
 
-pathproject="/home/julian/PythonWork/"
+pathproject="/home/julianbolanos/PythonWork/"
 base='probes/probeNDVIRedFilter/'
 nombre='mosaicoYaguara2'
 extension='.jpg'

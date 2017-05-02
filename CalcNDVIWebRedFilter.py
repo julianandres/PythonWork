@@ -1,27 +1,30 @@
 import sys
-
+print "hola"
 from os import listdir
 sys.path.append('/usr/local/lib/python2.7/site-packages')
+
 import time
 import numpy as np
 from matplotlib import pyplot as plt
 import cv2
 import funciones
+print cv2.__version__
 
 print sys.argv
 pathproject=sys.argv[1]
 archivosNoir=listdir(pathproject+'FotoNoir/')
 archivosRGB=listdir(pathproject+"FotoRGB/")
 if((len(archivosNoir)>0) and (len(archivosRGB)>0)) :
-#colocar funcion de trabajo
+	
 	pathFotoRGB=pathproject+'FotoRGB'+"/"+archivosRGB[0]
 	pathFotoNoir=pathproject+'FotoNoir'+"/"+archivosNoir[0]
 	imgOriginal = cv2.imread(pathFotoNoir)            # read next frame
 	#b, g, r = cv2.split(imgOriginal)
 	#cv2.imshow('Original',imgOriginal)
-	#funciones.loadImageAndNDVIUnaImagenAWB11(imgOriginal,nombre)
-	funciones.loadImageAndNDVIUnaImagenAWB1054(imgOriginal,"prueba",pathproject)
+	#funciones.loadImageAndNDVIUnaImagenAWB11(imgOriginal,"PRUEBA",pathproject)#llamado a la funcion del calculo
+	#funciones.loadImageAndNDVIRedFilter1054(imgOriginal,"prueba",pathproject)
+	funciones.loadImageAndNDVIFilterBlueAWB11(imgOriginal,"prueba",pathproject)
+	
 	imgOriginal=0;
-	#cv2.destroyAllWindows()
-	#print "siguiente"
+	
 
